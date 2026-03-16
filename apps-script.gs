@@ -3,7 +3,14 @@ const SHEET_NAME  = 'Sheet1';
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    var raw = e.postData.contents;
+    var data;
+    try {
+      data = JSON.parse(raw);
+    } catch(ex) {
+      var jsonStr = e.parameter.data || raw;
+      data = JSON.parse(jsonStr);
+    }
     appendToSheet(data);
     sendEmailNotification(data);
     return ContentService

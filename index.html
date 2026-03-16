@@ -1693,17 +1693,13 @@ async function handleSubmit(e) {
     };
 
     try {
-        if (SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode:   'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify(payload)
-            });
-        } else {
-            // Demo mode: simulate delay
-            await new Promise(r => setTimeout(r, 1400));
-        }
+        const form_data = new FormData();
+        form_data.append('data', JSON.stringify(payload));
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode:   'no-cors',
+            body:   form_data
+        });
         showSuccess();
     } catch {
         showSuccess(); // no-cors doesn't return response body — treat as success
