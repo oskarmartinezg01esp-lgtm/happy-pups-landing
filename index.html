@@ -892,6 +892,8 @@
         .nav-links { display:none; }
         .nav-toggle { display:flex; }
         .nav-drawer { display:block; }
+        .nav-inner { justify-content:flex-start; gap:12px; }
+        .nav-logo img { height:44px; }
         .gallery-grid { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
         .gallery-grid .gi:nth-child(1), .gallery-grid .gi:nth-child(4) { grid-column:span 2; }
         .gallery-grid .gi { aspect-ratio:4/3; }
@@ -919,6 +921,9 @@
 <nav class="nav" id="nav">
     <div class="container">
         <div class="nav-inner">
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
             <a href="#hero" class="nav-logo" aria-label="Happy Pups Pet Salon — Home">
                 <img src="https://res.cloudinary.com/dmrc5nwyd/image/upload/v1772882297/Dise%C3%B1o_sin_t%C3%ADtulo_1_yarynq.png"
                      alt="Happy Pups Pet Salon Logo">
@@ -930,8 +935,7 @@
                 <li><a href="#reviews">Reviews</a></li>
                 <li><a href="#booking" class="nav-cta">Book Now</a></li>
             </ul>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-                <span></span><span></span><span></span>
+            <span style="display:none"></span>
             </button>
         </div>
     </div>
