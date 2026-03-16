@@ -1578,7 +1578,7 @@ document.addEventListener('keydown', onFirstInteraction, { once: true });
 
 // ── CONFIG ─────────────────────────────────────────────────────────────────
 // Replace with your Google Apps Script Web App URL after setup (see apps-script.gs)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3A5_jGxqwqvdmT7zxDrWbalWsP1UB4ko2yGNBCfP5WKYdlShPUA6Vq0ZwNJGuBkqypQ/exec';
+const SCRIPT_URL = 'https://formspree.io/f/mqeyynog';
 
 // ── NAV ────────────────────────────────────────────────────────────────────
 const nav       = document.getElementById('nav');
@@ -1693,16 +1693,14 @@ async function handleSubmit(e) {
     };
 
     try {
-        const form_data = new FormData();
-        form_data.append('data', JSON.stringify(payload));
         await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode:   'no-cors',
-            body:   form_data
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body:    JSON.stringify(payload)
         });
         showSuccess();
     } catch {
-        showSuccess(); // no-cors doesn't return response body — treat as success
+        showSuccess();
     }
 }
 
