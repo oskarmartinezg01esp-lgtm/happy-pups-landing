@@ -221,9 +221,100 @@
     }
     .hero-video {
         position:absolute; inset:0; z-index:0;
+        background:#0D1F16;
+        display:flex; align-items:center; justify-content:center;
     }
     .hero-video video {
-        width:100%; height:100%; object-fit:cover;
+        width:100%; height:100%; object-fit:contain;
+        max-height:100vh;
+    }
+
+    /* ── Intro splash overlay ── */
+    .intro-splash {
+        position:fixed; inset:0; z-index:9998;
+        background:#0D1F16;
+        display:flex; flex-direction:column;
+        align-items:center; justify-content:center; gap:32px;
+        cursor:pointer;
+        transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    .intro-splash.hide { opacity:0; visibility:hidden; pointer-events:none; }
+
+    .intro-splash-logo { height:90px; width:auto; filter:drop-shadow(0 4px 24px rgba(196,146,42,0.4)); animation: heroFadeDown 0.9s ease 0.2s both; }
+
+    .intro-play-ring {
+        width:90px; height:90px; border-radius:50%;
+        border:2px solid rgba(196,146,42,0.5);
+        display:flex; align-items:center; justify-content:center;
+        position:relative; animation: heroFadeUp 0.9s ease 0.4s both;
+    }
+    .intro-play-ring::before {
+        content:''; position:absolute; inset:-8px; border-radius:50%;
+        border:1px solid rgba(196,146,42,0.2);
+        animation: ringPulse 2.5s ease-in-out infinite;
+    }
+    .intro-play-ring::after {
+        content:''; position:absolute; inset:-18px; border-radius:50%;
+        border:1px solid rgba(196,146,42,0.1);
+        animation: ringPulse 2.5s ease-in-out 0.4s infinite;
+    }
+    .intro-play-icon {
+        width:0; height:0;
+        border-top:18px solid transparent;
+        border-bottom:18px solid transparent;
+        border-left:30px solid var(--gold);
+        margin-left:6px;
+    }
+
+    .intro-tap-label {
+        font-family:var(--font-body); font-size:0.78rem; font-weight:600;
+        letter-spacing:0.22em; text-transform:uppercase;
+        color:rgba(255,255,255,0.5);
+        animation: heroFadeUp 0.9s ease 0.6s both;
+    }
+
+    /* Replay button (after video ends) */
+    .hero-replay-btn {
+        position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+        z-index:3; background:rgba(196,146,42,0.9); color:var(--white);
+        width:72px; height:72px; border-radius:50%; border:none;
+        display:none; align-items:center; justify-content:center;
+        font-size:1.5rem; cursor:pointer;
+        box-shadow:0 8px 32px rgba(196,146,42,0.5);
+        transition:all 0.3s var(--ease-bounce);
+    }
+    .hero-replay-btn.show { display:flex; animation: heroFadeUp 0.4s ease both; }
+    .hero-replay-btn:hover { transform:translate(-50%,-50%) scale(1.12); }
+
+    @keyframes ringPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.15);opacity:0.4} }
+
+    /* ── Sound gate ── */
+    .sound-gate {
+        position:absolute; inset:0; z-index:3;
+        display:flex; align-items:flex-end; justify-content:center;
+        padding-bottom:48px; cursor:pointer;
+        background: linear-gradient(to top, rgba(13,31,22,0.55) 0%, transparent 40%);
+        transition: opacity 0.5s ease;
+    }
+    .sound-gate.hidden { opacity:0; pointer-events:none; }
+
+    .sound-gate-inner {
+        display:flex; align-items:center; gap:12px;
+        background:rgba(13,31,22,0.7); backdrop-filter:blur(12px);
+        border:1px solid rgba(196,146,42,0.4);
+        padding:12px 24px; border-radius:100px;
+        color:var(--white); font-size:0.8rem; font-weight:600;
+        letter-spacing:0.1em; text-transform:uppercase;
+        animation: heroFadeUp 1s ease 0.8s both;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .sound-gate-inner:hover { background:rgba(196,146,42,0.3); transform:translateY(-2px); }
+
+    .sound-pulse {
+        width:36px; height:36px; border-radius:50%;
+        background:var(--gold); color:var(--white);
+        display:flex; align-items:center; justify-content:center;
+        animation: pulse 1.8s ease-in-out infinite;
     }
     .hero-overlay {
         position:absolute; inset:0; z-index:1;
@@ -453,8 +544,8 @@
         box-shadow:0 28px 64px rgba(0,0,0,0.35);
     }
     .price-card-img {
-        width:100%; aspect-ratio:4/3; object-fit:contain;
-        background:rgba(255,255,255,0.025); padding:20px;
+        width:100%; aspect-ratio:3/4; object-fit:contain;
+        background:rgba(255,255,255,0.025); padding:12px;
     }
     .price-card-body { padding:24px 28px; border-top:1px solid rgba(255,255,255,0.07); }
     .price-card-name {
@@ -790,7 +881,7 @@
     ════════════════════════════════════════════ */
     @media(max-width:1100px){
         .about-grid,.booking-grid,.contact-grid { grid-template-columns:1fr; gap:40px; }
-        .pricing-grid { grid-template-columns:1fr; max-width:480px; margin:0 auto; }
+        .pricing-grid { grid-template-columns:1fr; max-width:600px; margin:0 auto; }
         .reviews-grid { grid-template-columns:1fr; max-width:580px; margin:60px auto 0; }
         .footer-grid { grid-template-columns:1fr 1fr; gap:40px; }
         .hero-stats { display:none; }
@@ -861,10 +952,22 @@
 ════════════════════════════════════════════ -->
 <section class="hero" id="hero">
     <div class="hero-video">
-        <video autoplay muted loop playsinline preload="auto"
+        <video id="heroVideo" autoplay muted loop playsinline preload="auto"
                poster="https://res.cloudinary.com/dmrc5nwyd/image/upload/v1772882341/Captura_de_pantalla_2026-03-07_084046_ndjumg.png">
             <source src="https://res.cloudinary.com/dmrc5nwyd/video/upload/v1773507651/SnapInsta.to_AQPa4Fbvv45TsCD1kXvUViRLmESb0OFT3LwVKJ9kg_qJZCWAHE00h7GSNVCOqmIUTi8hEJVKqeiAwdhzyZVc9u6Ob6FDu6RFW47UQko_dqvr1a.mp4" type="video/mp4">
         </video>
+
+        <!-- Sound CTA — shown until user interacts -->
+        <div class="sound-gate" id="soundGate" onclick="enableSound()">
+            <div class="sound-gate-inner">
+                <div class="sound-pulse">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                </div>
+                <span>Toca para activar sonido</span>
+            </div>
+        </div>
     </div>
     <div class="hero-overlay"></div>
 
@@ -1447,6 +1550,32 @@
      JAVASCRIPT
 ════════════════════════════════════════════ -->
 <script>
+// ── VIDEO + SOUND GATE ─────────────────────────────────────────────────────
+const heroVideo  = document.getElementById('heroVideo');
+const soundGate  = document.getElementById('soundGate');
+
+function enableSound() {
+    heroVideo.muted = false;
+    heroVideo.currentTime = 0;
+    heroVideo.play();
+    soundGate.classList.add('hidden');
+}
+
+// Also enable sound on any click/scroll anywhere on the page (first interaction)
+function onFirstInteraction() {
+    if (!heroVideo.muted) return;
+    heroVideo.muted = false;
+    heroVideo.currentTime = 0;
+    heroVideo.play().catch(() => {});
+    soundGate.classList.add('hidden');
+    document.removeEventListener('click', onFirstInteraction);
+    document.removeEventListener('scroll', onFirstInteraction);
+    document.removeEventListener('keydown', onFirstInteraction);
+}
+document.addEventListener('click',   onFirstInteraction, { once: true });
+document.addEventListener('scroll',  onFirstInteraction, { once: true });
+document.addEventListener('keydown', onFirstInteraction, { once: true });
+
 // ── CONFIG ─────────────────────────────────────────────────────────────────
 // Replace with your Google Apps Script Web App URL after setup (see apps-script.gs)
 const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
